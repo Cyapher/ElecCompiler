@@ -1087,9 +1087,21 @@ public class Parser {
 					TreeNode concatNode = new TreeNode("CONCAT", "+");
 					concatNode.setName("CONCAT");
 					node.addChild(concatNode);
-					expect("ADDITION");
-	
-				}else if(!accept("DOUBLE_QUOTE")) { //for expressions
+					expect("ADDITION");		
+
+				}else if(isType("INTEGER VALUE")){
+					TreeNode intNode = new TreeNode("INTEGER VALUE", currentToken().getKey());
+					intNode.setName("INTEGER VALUE");
+					node.addChild(intNode);
+					expect("INTEGER VALUE");
+
+				}else if(isType("IDENTIFIER")){
+					TreeNode idNode = new TreeNode("IDENTIFIER", currentToken().getKey());
+					idNode.setName("IDENTIFIER");
+					idNode.addChild(idNode);
+					expect("IDENTIFIER");
+				}
+				else if(!accept("DOUBLE_QUOTE") && !accept("INTEGER VALUE") ) { //for expressions
 					node.addChild(expression());
 	
 				}else {
