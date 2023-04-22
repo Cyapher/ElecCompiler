@@ -6,4 +6,4 @@ luts raaa;
 luts ra = 5.34;
 Sinds a = "asdasd";
 
-makeSulat("asd");
+makeSulat(10+"asd");

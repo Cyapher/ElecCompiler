@@ -19,7 +19,7 @@ public class Lexer {
 
 		try {
 			// Open the source code file
-			File file = new File("C:\\Users\\CG\\Desktop\\JavaParser\\src\\main\\java\\org\\example\\source.txt");
+			File file = new File("src/main/java/org/example/source.txt");
 			BufferedReader reader = new BufferedReader(new FileReader(file));
 
 			// Initialize the lexical analyzer

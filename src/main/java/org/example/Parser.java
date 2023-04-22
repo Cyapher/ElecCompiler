@@ -1066,28 +1066,37 @@ public class Parser {
 			openParNode.setName("OpenPar Operator");
 			node.addChild(openParNode);
 
-			if (isType("DOUBLE_QUOTE")) {
-				TreeNode openingQuoteNode = new TreeNode("DOUBLE_QUOTE", "\"");
-				openingQuoteNode.setName("Opening Double Quote");
-				node.addChild(openingQuoteNode);
-				expect("DOUBLE_QUOTE"); // Expect opening double quote
-
-				TreeNode valueNode = new TreeNode("Value", currentToken().getKey());
-				valueNode.setName("Assigned Value");
-				node.addChild(valueNode);
-				expect("STRING_VALUE");
-
-				TreeNode closingQuoteNode = new TreeNode("DOUBLE_QUOTE", "\"");
-				closingQuoteNode.setName("Closing Double Quote");
-				node.addChild(closingQuoteNode);
-				expect("DOUBLE_QUOTE"); // Expect closing double quote
-
-			} else if (!accept("DOUBLE_QUOTE")) { // If not a String
-				node.addChild(expression());
-
-			} else {
-				throw new IllegalStateException("Expected string or expression, but got: " + currentToken().getValue());
+			while(!isType("CLOSE PARENTHESIS")){
+				if (isType("DOUBLE_QUOTE")) { //for Strings
+					TreeNode openingQuoteNode = new TreeNode("DOUBLE_QUOTE", "\"");
+					openingQuoteNode.setName("Opening Double Quote");
+					node.addChild(openingQuoteNode);
+					expect("DOUBLE_QUOTE"); // Expect opening double quote
+	
+					TreeNode valueNode = new TreeNode("Value", currentToken().getKey());
+					valueNode.setName("Assigned Value");
+					node.addChild(valueNode);
+					expect("STRING_VALUE");
+	
+					TreeNode closingQuoteNode = new TreeNode("DOUBLE_QUOTE", "\"");
+					closingQuoteNode.setName("Closing Double Quote");
+					node.addChild(closingQuoteNode);
+					expect("DOUBLE_QUOTE"); // Expect closing double quote
+	
+				}else if(isType("ADDITION")){
+					TreeNode concatNode = new TreeNode("CONCAT", "+");
+					concatNode.setName("CONCAT");
+					node.addChild(concatNode);
+					expect("ADDITION");
+	
+				}else if(!accept("DOUBLE_QUOTE")) { //for expressions
+					node.addChild(expression());
+	
+				}else {
+					throw new IllegalStateException("Expected string or expression, but got: " + currentToken().getValue()); 
+				}
 			}
+			
 
 			TreeNode closingPar = new TreeNode("CLOSE PARENTHESIS", ")");
 			node.addChild(closingPar);
