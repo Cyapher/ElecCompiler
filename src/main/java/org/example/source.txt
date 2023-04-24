@@ -1,3 +1,36 @@
+ifever( a ⩵ 4) {
+makeSulat(2 + 3);
+}
+
+ifever( a > 2 ){
+a = 1;
+} ifnot {
+a = 2;
+}
+
+ifever( a < 2 ){
+a = 1;
+} unless (a ⩵ 2) {
+a = 2;
+} ifnot {
+a = 3;
+}
+
+makegawa{
+    a = 1;
+}
+habang ( a < 10 );
+
+
+habang (a < 20){
+ a = a;
+}
+
+kung(cofs i = 1; i < 10; i++){
+ makeSulat("asd");
+}
+
+
 cofs myInteger1 = 2;
 {
 cofs myInteger2 = 5;

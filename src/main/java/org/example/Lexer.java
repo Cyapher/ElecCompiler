@@ -124,7 +124,7 @@ public class Lexer {
 		map.put("DEINS", "DEINS"); // NOT
 		map.put("ifever", "ifever"); // if operation
 		map.put("ifnot", "ifnot"); // else operation
-		map.put("unless", "ELSE IF");// else if operation
+		map.put("unless", "unless");// else if operation
 		map.put("makegawa", "makegawa");// do operation
 		map.put("habang", "habang");// while operation
 		map.put("kung", "kung");// for operation
