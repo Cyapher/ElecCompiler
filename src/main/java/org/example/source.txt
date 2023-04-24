@@ -1,2 +1,2 @@
-
-cofs myInteger2 = (luts);
+luts e = (luts) 3.43;
+cofs myint = (3+3) + 9;

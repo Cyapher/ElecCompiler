@@ -157,20 +157,40 @@ public class Parser {
 		identifierNode.setName("Variable Name");
 		node.addChild(identifierNode);
 		expect("IDENTIFIER");
+		
+		System.out.println("PEEK: " + peekNextToken().getValue());
+
+		if(currentAndNext()){
+			throw new IllegalStateException("Unexpected Tokens");
+		}
 
 		if (accept("ASSIGNMENT")) {
 			TreeNode assignmentNode = new TreeNode("Assignment", "=");
 			assignmentNode.setName("Assignment Operator");
 			node.addChild(assignmentNode);
 
-			TreeNode expressionNode = expression();
-			expressionNode.setName("Assigned Value");
-			node.addChild(expressionNode);
+			// expression / operator / operand
+			// while loop for expression(!end of line)
+			while (!isType("END OF LINE")) {
 
-			if (accept("CLOSE PARENTHESIS")) {
-				throw new IllegalStateException("Unexpected token of type: CLOSE PARENTHESIS");
+				// recognizing between parenthesis/non-parenthesis expressions and operands will
+				// be done in expression()
+				TreeNode expressionNode = expression();
+				expressionNode.setName("Assigned Value");
+				node.addChild(expressionNode);
+
+
+				// i-angat ito??
+				if (accept("CLOSE PARENTHESIS")) {
+					throw new IllegalStateException("Unexpected token of type: CLOSE PARENTHESIS");
+				}
 			}
 		}
+		// else if(isType("ADDITION") || isType("SUBTRACTION") ||
+		// isType("MULTIPLICATION") || isType("DIVISION") || isType("MODULO")){
+
+		// TreeNode expressionNode = expression();
+		// }
 
 		expect("END OF LINE");
 
@@ -181,42 +201,43 @@ public class Parser {
 	private TreeNode lutsInitialization() {
 		TreeNode node = new TreeNode("Luts Initialization");
 
-        TreeNode typeNode = new TreeNode("Type", "luts");
-        typeNode.setName("Luts Type");
-        node.addChild(typeNode);
-        expect("luts");
+		TreeNode typeNode = new TreeNode("Type", "luts");
+		typeNode.setName("Luts Type");
+		node.addChild(typeNode);
+		expect("luts");
 
-        TreeNode identifierNode = new TreeNode("Identifier", currentToken().getKey());
-        identifierNode.setName("Variable Name");
-        node.addChild(identifierNode);
-        expect("IDENTIFIER");
+		TreeNode identifierNode = new TreeNode("Identifier", currentToken().getKey());
+		identifierNode.setName("Variable Name");
+		node.addChild(identifierNode);
+		expect("IDENTIFIER");
 
-        if (accept("ASSIGNMENT")) {
-            TreeNode assignmentNode = new TreeNode("Assignment", "=");
-            assignmentNode.setName("Assignment Operator");
-            node.addChild(assignmentNode);
+		if (accept("ASSIGNMENT")) {
+			TreeNode assignmentNode = new TreeNode("Assignment", "=");
+			assignmentNode.setName("Assignment Operator");
+			node.addChild(assignmentNode);
 
-            if (accept("OPEN PARENTHESIS")) {
-                TreeNode openingP = new TreeNode("(","(");
-                node.addChild(openingP);
-                if (isType("luts")){
-                    TreeNode castNode = casting();
-                    node.addChild(castNode);
-                }
-                else{
-                    //accept this >> (1.232+232) / 2 * 3
-                }
-            }
-            else{
-                TreeNode valueNode = new TreeNode("Value", currentToken().getKey());
-                valueNode.setName("Assigned Value");
-                node.addChild(valueNode);
-                expect("FLOAT VALUE");
-            }
-        }
+			if (accept("OPEN PARENTHESIS")) {
+				TreeNode openingP = new TreeNode("OPEN PARENTHESIS", "(");
+				node.addChild(openingP);
+				if (isType("luts")) {
+					TreeNode castNode = casting();
+					node.addChild(castNode);
+				} else {
+					// accept this >> (1.232+232) / 2 * 3
+					TreeNode expressionNode = expression();
+					expressionNode.setName("AFTER");
+					node.addChild(expressionNode);
+				}
+			} else {
+				TreeNode valueNode = new TreeNode("Value", currentToken().getKey());
+				valueNode.setName("Assigned Value");
+				node.addChild(valueNode);
+				expect("FLOAT VALUE");
+			}
+		}
 
-        expect("END OF LINE");
-        return node;
+		expect("END OF LINE");
+		return node;
 	}
 
 	// Sinds(String) initialization
@@ -499,48 +520,79 @@ public class Parser {
 	private TreeNode expression() {
 		TreeNode expressionNode = new TreeNode("Expression", "Expression");
 
-        if(isType("OPEN PARENTHESIS")) {
-            TreeNode openingP = new TreeNode("OPEN PARENTHESIS","(");
-            expressionNode.addChild(openingP);
-            nextToken();
-            if (isType("luts") || isType("cofs")) {
-                System.out.println("iraa");
-                TreeNode castNode = casting();
-                expressionNode.addChild(castNode);
-            } else {
-                System.out.println("else inside chain");
-                TreeNode termNode = term();
-                expressionNode.addChild(termNode);
+		if (isType("OPEN PARENTHESIS")) {
+			TreeNode openingP = new TreeNode("OPEN PARENTHESIS", "(");
+			expressionNode.addChild(openingP);
+			nextToken();
+			if (isType("luts") || isType("cofs")) {
+				System.out.println("iraa");
+				TreeNode castNode = casting();
+				expressionNode.addChild(castNode);
+			} else {
+				System.out.println("else inside chain");
+				TreeNode termNode = term();
+				expressionNode.addChild(termNode);
 
-                while (isType("ADDITION") || isType("SUBTRACTION") || isType("MODULO") || isType("LESS THAN") || isType("GREATER THAN")) {
-                    TreeNode operatorNode = new TreeNode(currentToken().getValue(), currentToken().getKey());
-                    expressionNode.addChild(operatorNode);
-                    nextToken();
+				while (isType("ADDITION") || isType("SUBTRACTION") || isType("MODULO") || isType("LESS THAN")
+						|| isType("GREATER THAN")) {
+					TreeNode operatorNode = new TreeNode(currentToken().getValue(), currentToken().getKey());
+					expressionNode.addChild(operatorNode);
+					nextToken();
 
-                    termNode = term();
-                    expressionNode.addChild(termNode);
-                }
-                expect("CLOSE PARENTHESIS");
+					termNode = term();
+					expressionNode.addChild(termNode);
+				}
+				expect("CLOSE PARENTHESIS");
+				TreeNode closingP = new TreeNode("CLOSE PARENTHESIS", ")");
+				expressionNode.addChild(closingP);
+			}
 
-            }
+		} else if (isType("INTEGER VALUE") || isType("FLOAT VALUE")) {
+			System.out.println("else outside chain");
+			System.out.println(currentToken().getKey());
+			TreeNode termNode = term();
+			expressionNode.addChild(termNode);
 
-        }else if(isType("INTEGER VALUE")|| isType("FLOAT VALUE")){
-            System.out.println("else outside chain");
-            System.out.println(currentToken().getKey());
-            TreeNode termNode = term();
-            expressionNode.addChild(termNode);
+			while (isType("ADDITION") || isType("SUBTRACTION") || isType("MODULO") || isType("LESS THAN")
+					|| isType("GREATER THAN")) {
+				TreeNode operatorNode = new TreeNode(currentToken().getValue(), currentToken().getKey());
+				expressionNode.addChild(operatorNode);
+				nextToken();
 
-            while (isType("ADDITION") || isType("SUBTRACTION") || isType("MODULO") || isType("LESS THAN") || isType("GREATER THAN")) {
-                TreeNode operatorNode = new TreeNode(currentToken().getValue(), currentToken().getKey());
-                expressionNode.addChild(operatorNode);
-                nextToken();
+				termNode = term();
+				expressionNode.addChild(termNode);
+			}
+		}
 
-                termNode = term();
-                expressionNode.addChild(termNode);
-            }
-        }
+		else if (!currentAndNext()) {
+			TreeNode operatorNode = new TreeNode(currentToken().getValue(), currentToken().getKey());
+			operatorNode.setName("Operator");
+			expressionNode.addChild(operatorNode);
+			nextToken();
+		}	
 
-        return expressionNode;
+		return expressionNode;
+	}
+
+	private boolean currentAndNext() {
+		boolean curr = false;
+		boolean next = false;
+		if (isType("ADDITION") || isType("SUBTRACTION") || isType("MODULO") || isType("LESS THAN") || isType("GREATER THAN") || isType("ASSIGNMENT")) {
+			curr = true;
+		}
+		if ((peekNextToken().getValue() == "ADDITION")  
+		|| (peekNextToken().getValue() == "SUBTRACTION") 
+		|| (peekNextToken().getValue() == "MODULO")
+		|| (peekNextToken().getValue() == "LESS THAN")
+		|| (peekNextToken().getValue() == "GREATER THAN")) {
+			next = true;
+		}
+
+		if (curr & next) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	private TreeNode term() {
@@ -662,17 +714,17 @@ public class Parser {
 		System.out.println("cast");
 		TreeNode castCheckNode = new TreeNode("Casting", "Casting");
 		castCheckNode.setName("castCheckNode");
-	
+
 		if (isType("luts") || isType("cofs")) {
 			TreeNode castNode = new TreeNode(currentToken().getValue(), currentToken().getKey());
 			castCheckNode.addChild(castNode);
 			System.out.println(castNode);
 			nextToken();
-	
+
 			TreeNode targetTypeNode = new TreeNode(currentToken().getValue(), currentToken().getKey());
 			castCheckNode.addChild(targetTypeNode);
 			nextToken();
-	
+
 			TreeNode valueNode = expression(); // Call expression() to handle the casting value
 			castCheckNode.addChild(valueNode);
 		}
