@@ -113,7 +113,7 @@ public class Parser {
 		} else if (isType("makegawa")) {
 			statementNode = makeGawaStatement();
 		} else if (isType("kung")) {
-			statementNode = KungStatement();
+			statementNode = kungStatement();
 		} else if (isType("makeSulat")) {
 			statementNode = makesulatStatement();
 		} else if (isType("OPEN CURLY")) {
@@ -859,7 +859,7 @@ public class Parser {
 			expect("CLOSE CURLY");
 		}
 
-		expect("END OF LINE");
+//		expect("END OF LINE");
 		return ifNotnode;
 	}
 
@@ -871,6 +871,21 @@ public class Parser {
 		typeNode.setName("unless Type");
 		unlessnode.addChild(typeNode);
 		expect("unless");
+
+		if (accept("OPEN PARENTHESIS")) {
+			TreeNode openParNode = new TreeNode("OPEN PARENTHESIS", "(");
+			openParNode.setName("OpenPar Operator");
+			unlessnode.addChild(openParNode);
+
+			TreeNode logconNode = logCondition();
+			logconNode.setName("Condition");
+			unlessnode.addChild(logconNode);
+
+			TreeNode closeParNode = new TreeNode("CLOSE PARENTHESIS", ")");
+			closeParNode.setName("Closing paren ");
+			unlessnode.addChild(closeParNode);
+			expect("CLOSE PARENTHESIS");
+		}
 
 		if (accept("OPEN CURLY")) {
 			TreeNode openCurlyNode = new TreeNode("OPEN CURLY", "{");
@@ -927,7 +942,7 @@ public class Parser {
 			Habangnode.addChild(closeCurlyNode);
 			expect("CLOSE CURLY");
 		}
-		expect("END OF LINE");
+//		expect("END OF LINE");
 		return Habangnode;
 	}
 
@@ -974,91 +989,14 @@ public class Parser {
 			makeGawanode.addChild(closeParNode);
 			expect("CLOSE PARENTHESIS");
 		}
+		TreeNode EOFNode = new TreeNode("END OF LINE", ";");
+		EOFNode.setName("END OF LINE Operator");
+		makeGawanode.addChild(EOFNode);
 		expect("END OF LINE");
 		return makeGawanode;
 	}
 
-	private TreeNode kungcondition() {
-		TreeNode kungconditionNode = new TreeNode("condition");
-
-		if (accept("cofs")) {
-
-			TreeNode termNode = cofsInitialization();
-			kungconditionNode.addChild(termNode);
-
-			TreeNode identifierNode = new TreeNode("Identifier", currentToken().getKey());
-			identifierNode.setName("Variable Name");
-			kungconditionNode.addChild(identifierNode);
-			expect("IDENTIFIER");
-
-			TreeNode assignmentNode = new TreeNode("Assignment", "=");
-			assignmentNode.setName("Assignment Operator");
-			kungconditionNode.addChild(assignmentNode);
-			expect("ASSIGNMENT");
-
-			TreeNode term1Node = term();
-			kungconditionNode.addChild(term1Node);
-
-			while (isType("LESS THAN") || isType("GREATER THAN") || isType("EQUALITY") || isType("NON EQUALITY")
-					|| isType("LESS THAN EQUAL TO") || isType("GREATER THAN EQUAL TO")) {
-				TreeNode operatorNode = new TreeNode("RelOperator", currentToken().getKey());
-				kungconditionNode.addChild(operatorNode);
-				nextToken();
-
-				termNode = term();
-				kungconditionNode.addChild(termNode);
-			}
-			// while (isType("ADDITION") || isType("SUBTRACTION") || isType("MODULO") ||
-			// isType("MULTIPLICATION") || isType("DIVISION")) {
-			// TreeNode operatorNode = new TreeNode("Operator", currentToken().getKey());
-			// kungconditionNode.addChild(operatorNode);
-			// nextToken();
-			//
-			// termNode = term();
-			// kungconditionNode.addChild(termNode);
-			TreeNode expressionNode = expression();
-			expressionNode.setName("Assigned Value");
-			kungconditionNode.addChild(expressionNode);
-			// }
-		} else {
-			TreeNode identifierNode = new TreeNode("Identifier", currentToken().getKey());
-			identifierNode.setName("Variable Name");
-			kungconditionNode.addChild(identifierNode);
-			expect("IDENTIFIER");
-
-			TreeNode assignmentNode = new TreeNode("Assignment", "=");
-			assignmentNode.setName("Assignment Operator");
-			kungconditionNode.addChild(assignmentNode);
-			expect("ASSIGNMENT");
-
-			TreeNode termNode = term();
-			kungconditionNode.addChild(termNode);
-
-			while (isType("LESS THAN") || isType("GREATER THAN") || isType("EQUALITY") || isType("NON EQUALITY")
-					|| isType("LESS THAN EQUAL TO") || isType("GREATER THAN EQUAL TO")) {
-				TreeNode operatorNode = new TreeNode("RelOperator", currentToken().getKey());
-				kungconditionNode.addChild(operatorNode);
-				nextToken();
-
-				termNode = term();
-				kungconditionNode.addChild(termNode);
-			}
-			while (isType("ADDITION") || isType("SUBTRACTION") || isType("MODULO") || isType("MULTIPLICATION")
-					|| isType("DIVISION")) {
-				TreeNode operatorNode = new TreeNode("Operator", currentToken().getKey());
-				kungconditionNode.addChild(operatorNode);
-				nextToken();
-
-				termNode = term();
-				kungconditionNode.addChild(termNode);
-			}
-
-		}
-		return kungconditionNode;
-	}
-
-	// kung(for) loop
-	private TreeNode KungStatement() {
+	private TreeNode kungStatement() {
 		TreeNode kungnode = new TreeNode("kung Statement");
 
 		TreeNode typeNode = new TreeNode("Type", "kung");
@@ -1071,33 +1009,29 @@ public class Parser {
 		kungnode.addChild(openParNode);
 		expect("OPEN PARENTHESIS");
 
-		TreeNode statementNode = kungcondition();
-		statementNode.setName("Statements");
-		kungnode.addChild(statementNode);
+		// Initialization Expression
+		TreeNode initializationNode = cofsInitialization();
+		initializationNode.setName("Initialization");
+		kungnode.addChild(initializationNode);
 
-		TreeNode colon1Node = new TreeNode("END OF LINE", ";");
-		colon1Node.setName("colon ");
-		kungnode.addChild(colon1Node);
+		// Condition Expression
+		TreeNode conditionNode = logCondition();
+		conditionNode.setName("Condition");
+		kungnode.addChild(conditionNode);
+		TreeNode EOFNode = new TreeNode("END OF LINE", ";");
+		EOFNode.setName("END OF LINE Operator");
+		conditionNode.addChild(EOFNode);
 		expect("END OF LINE");
 
-		TreeNode statement2Node = kungcondition();
-		statement2Node.setName("Statements");
-		kungnode.addChild(statement2Node);
+		//increment
 
-		TreeNode colon2Node = new TreeNode("END OF LINE", ";");
-		colon2Node.setName("colon ");
-		kungnode.addChild(colon2Node);
-		expect("END OF LINE");
+		TreeNode expressionNode = updateExpression();
+		expressionNode.setName("Update");
+		kungnode.addChild(expressionNode);
 
-		TreeNode statement3Node = kungcondition();
-		statement3Node.setName("Statements");
-		kungnode.addChild(statement3Node);
-
-		TreeNode closeParNode = new TreeNode("CLOSE PARENTHESIS", ")");
-		closeParNode.setName("Closing paren ");
-		kungnode.addChild(closeParNode);
 		expect("CLOSE PARENTHESIS");
 
+		//Statement
 		if (accept("OPEN CURLY")) {
 			TreeNode openCurlyNode = new TreeNode("OPEN CURLY", "{");
 			openCurlyNode.setName("OpenCurly Operator");
@@ -1115,6 +1049,30 @@ public class Parser {
 
 		return kungnode;
 	}
+
+	private TreeNode updateExpression() {
+		TreeNode updateNode = new TreeNode("Update", "Update");
+
+		if (isType("IDENTIFIER")) {
+			TreeNode identifierNode = new TreeNode("Identifier", currentToken().getKey());
+			updateNode.addChild(identifierNode);
+			nextToken();
+
+			if (accept("ADDITION") && isType("ADDITION")) { //Increment
+				TreeNode incrementNode = new TreeNode("Increment", "++");
+				incrementNode.setName("Increment");
+				updateNode.addChild(incrementNode);
+				expect("ADDITION");
+			} else if (accept("SUBRACTION") && isType("ADDITION")) {
+				TreeNode incrementNode = new TreeNode("Decrement", "--");
+				incrementNode.setName("Decrement");
+				updateNode.addChild(incrementNode);
+			}
+		}
+
+		return updateNode;
+	}
+
 
 	// FUNCTIONS ----------------------------------------------------
 
