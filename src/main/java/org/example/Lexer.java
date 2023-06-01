@@ -15,6 +15,8 @@ import java.io.IOException;
 public class Lexer {
 
 	public List<SimpleEntry<String, String>> analyzeTokens() throws IOException {
+		
+		System.out.println("============ IN LEXER ============");
 		List<SimpleEntry<String, String>> symbol_table = SYMBOL_TABLE();
 
 		try {

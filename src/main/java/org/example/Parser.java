@@ -7,11 +7,11 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 public class Parser {
-	private List<SimpleEntry<String, String>> tokens;
+	private List<SimpleEntry<String, String>> tokens; //value = type
 	private int currentIndex;
-
 	private int scope = 1;
 	private HashMap<Integer, List<String>> identifiersList = new HashMap<Integer, List<String>>();
+	private TreeNode parseTree; 
 
 	public Parser(List<SimpleEntry<String, String>> tokens) {
 		this.tokens = tokens;
@@ -59,13 +59,14 @@ public class Parser {
 	}
 
 	public TreeNode parse() {
-		TreeNode parseTree = new TreeNode("Program");
+		System.out.println("============ IN PARSER ============");
+		this.parseTree = new TreeNode("Program");
 
 		while (hasTokens()) {
-			parseTree.addChild(statement(parseTree));
+			this.parseTree.addChild(statement(parseTree));
 		}
 
-		return parseTree;
+		return this.parseTree;
 	}
 
 	private SimpleEntry<String, String> peekNextToken() {
@@ -75,6 +76,7 @@ public class Parser {
 		return tokens.get(currentIndex + 1);
 	}
 
+	//Statement
 	private TreeNode statement(TreeNode parseTree) {
 		TreeNode statementNode = null;
 
@@ -158,7 +160,7 @@ public class Parser {
 		node.addChild(identifierNode);
 		expect("IDENTIFIER");
 		
-		System.out.println("PEEK: " + peekNextToken().getValue());
+		//System.out.println("PEEK: " + peekNextToken().getValue());
 
 		if(currentAndNext()){
 			throw new IllegalStateException("Unexpected Tokens");
@@ -795,7 +797,7 @@ public class Parser {
 
 	// ifEver(if) Statement
 	private TreeNode ifEverStatement() {
-		TreeNode ifevernode = new TreeNode("ifEver Statement");
+		TreeNode ifevernode = new TreeNode("ifEver Statement","ifEver Statement");
 
 		TreeNode typeNode = new TreeNode("Type", "ifever");
 		typeNode.setName("ifever Type");
@@ -1104,7 +1106,13 @@ public class Parser {
 					node.addChild(closingQuoteNode);
 					expect("DOUBLE_QUOTE"); // Expect closing double quote
 
-				} else if (isType("ADDITION")) {
+				} else if (isType("IDENTIFIER")) {
+					TreeNode idNode = new TreeNode("IDENTIFIER", currentToken().getKey());
+					idNode.setName("IDENTIFIER");
+					node.addChild(idNode);
+					expect("IDENTIFIER");
+					
+				}else if (isType("ADDITION")) {
 					TreeNode concatNode = new TreeNode("CONCAT", "+");
 					concatNode.setName("CONCAT");
 					node.addChild(concatNode);
@@ -1116,11 +1124,6 @@ public class Parser {
 					node.addChild(intNode);
 					expect("INTEGER VALUE");
 
-				} else if (isType("IDENTIFIER")) {
-					TreeNode idNode = new TreeNode("IDENTIFIER", currentToken().getKey());
-					idNode.setName("IDENTIFIER");
-					idNode.addChild(idNode);
-					expect("IDENTIFIER");
 				} else if (!accept("DOUBLE_QUOTE") && !accept("INTEGER VALUE")) { // for expressions
 					node.addChild(expression());
 
@@ -1142,5 +1145,12 @@ public class Parser {
 		expect("END OF LINE");
 		return node;
 	}
+
+	// GETTER ----------------------------------------------------
+	public TreeNode getTree(){
+		return parseTree;
+	}
+
+	
 
 }
