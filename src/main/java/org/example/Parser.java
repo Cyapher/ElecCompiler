@@ -60,7 +60,7 @@ public class Parser {
 
 	public TreeNode parse() {
 		System.out.println("============ IN PARSER ============");
-		this.parseTree = new TreeNode("Program");
+		this.parseTree = new TreeNode("Program", "Program");
 
 		while (hasTokens()) {
 			this.parseTree.addChild(statement(parseTree));
@@ -134,7 +134,8 @@ public class Parser {
 	// GENERAL METHODS -----------------------------------------------
 
 	private TreeNode statements() {
-		TreeNode statementsNode = new TreeNode("Statements");
+		TreeNode statementsNode = new TreeNode("Statements", "Statements");
+		statementsNode.setName("Statements");
 
 		while (!isType("CLOSE CURLY")) {
 			TreeNode statementNode = statement(statementsNode);
@@ -148,7 +149,8 @@ public class Parser {
 
 	// cofs(int) initialization
 	private TreeNode cofsInitialization() {
-		TreeNode node = new TreeNode("Cofs Initialization");
+		TreeNode node = new TreeNode("Cofs Initialization", "Cofs Initialization");
+		node.setName("Cofs Initialization");
 
 		TreeNode typeNode = new TreeNode("Type", "cofs");
 		typeNode.setName("Cofs Type");
@@ -201,7 +203,8 @@ public class Parser {
 
 	// luts(float) initialization
 	private TreeNode lutsInitialization() {
-		TreeNode node = new TreeNode("Luts Initialization");
+		TreeNode node = new TreeNode("Luts Initialization", "Luts Initialization");
+		node.setName("Luts Initialization");
 
 		TreeNode typeNode = new TreeNode("Type", "luts");
 		typeNode.setName("Luts Type");
@@ -244,7 +247,8 @@ public class Parser {
 
 	// Sinds(String) initialization
 	private TreeNode sindsInitialization() {
-		TreeNode node = new TreeNode("Sinds Initialization");
+		TreeNode node = new TreeNode("Sinds Initialization", "Sinds Initialization");
+		node.setName("Sinds Initialization");
 
 		TreeNode typeNode = new TreeNode("Type", "Sinds");
 		typeNode.setName("Sinds Type");
@@ -291,7 +295,8 @@ public class Parser {
 
 	// cofs(int) array initialization
 	private TreeNode cofsArrayInitialization() {
-		TreeNode node = new TreeNode("Cofs Array Initialization");
+		TreeNode node = new TreeNode("Cofs Array Initialization", "Cofs Array Initialization");
+		node.setName("Cofs Array Initialization");
 
 		TreeNode typeNode = new TreeNode("Type", "cofs");
 		typeNode.setName("Cofs Type");
@@ -311,7 +316,8 @@ public class Parser {
 
 	// luts(float) array initialization
 	private TreeNode lutsArrayInitialization() {
-		TreeNode node = new TreeNode("Luts Array Initialization");
+		TreeNode node = new TreeNode("Luts Array Initialization", "Luts Array Initialization");
+		node.setName("Luts Array Initialization");
 
 		TreeNode typeNode = new TreeNode("Type", "luts");
 		typeNode.setName("Luts Type");
@@ -331,7 +337,8 @@ public class Parser {
 
 	// Sinds(String) array initialization
 	private TreeNode sindsArrayInitialization() {
-		TreeNode node = new TreeNode("Sinds Array Initialization");
+		TreeNode node = new TreeNode("Sinds Array Initialization","Sinds Array Initialization");
+		node.setName("Sinds Array Initialization");
 
 		TreeNode typeNode = new TreeNode("Type", "Sinds");
 		typeNode.setName("Sinds Type");
@@ -446,7 +453,8 @@ public class Parser {
 	}
 
 	private TreeNode arrayAssignmentStatement() {
-		TreeNode node = new TreeNode("Array Assignment Statement");
+		TreeNode node = new TreeNode("Array Assignment Statement", "Array Assignment Statement");
+		node.setName("Array Assignment Statement");
 
 		TreeNode identifierNode = new TreeNode("Identifier", currentToken().getKey());
 		identifierNode.setName("Array Name");
@@ -496,8 +504,9 @@ public class Parser {
 	}
 
 	private TreeNode assignmentStatement() {
-		TreeNode node = new TreeNode("Assignment Statement");
+		TreeNode node = new TreeNode("Assignment Statement", "Assignment Statement");
 		TreeNode identifierNode = new TreeNode("Identifier", currentToken().getKey());
+		node.setName("Assignment Statement");
 		identifierNode.setName("Assigned Variable");
 		node.addChild(identifierNode);
 		expect("IDENTIFIER");
@@ -521,7 +530,7 @@ public class Parser {
 
 	private TreeNode expression() {
 		TreeNode expressionNode = new TreeNode("Expression", "Expression");
-
+		expressionNode.setName("Expression");
 		if (isType("OPEN PARENTHESIS")) {
 			TreeNode openingP = new TreeNode("OPEN PARENTHESIS", "(");
 			expressionNode.addChild(openingP);
@@ -599,6 +608,7 @@ public class Parser {
 
 	private TreeNode term() {
 		TreeNode termNode = new TreeNode("Term", "Term");
+		termNode.setName("Term");
 
 		TreeNode factorNode = factor();
 		termNode.addChild(factorNode);
@@ -671,7 +681,8 @@ public class Parser {
 	// RELATIONAL OPERATIONS ----------------------------------------
 
 	private TreeNode condition() {
-		TreeNode conditionNode = new TreeNode("condition");
+		TreeNode conditionNode = new TreeNode("condition", "condition");
+		conditionNode.setName("condition");
 
 		TreeNode termNode = term();
 		conditionNode.addChild(termNode);
@@ -692,7 +703,8 @@ public class Parser {
 	// LOGICAL OPERATIONS -------------------------------------------
 
 	private TreeNode logCondition() { // parang term din pero it's here para sa precedence
-		TreeNode logconNode = new TreeNode("logcondition");
+		TreeNode logconNode = new TreeNode("logcondition", "logcondition");
+		logconNode.setName("logcondition");
 
 		TreeNode conditionNode = condition();
 		logconNode.addChild(conditionNode);
@@ -741,7 +753,8 @@ public class Parser {
 	// SCOPING ------------------------------------------------------
 
 	private TreeNode enterScope() {
-		TreeNode node = new TreeNode("Enter Scope");
+		TreeNode node = new TreeNode("Enter Scope", "Enter Scope");
+		node.setName("Enter Scope");
 
 		TreeNode scopeEntry = new TreeNode("Enter Scope", "{");
 		scopeEntry.setName("Enter Scope");
@@ -755,7 +768,8 @@ public class Parser {
 	}
 
 	private TreeNode exitScope() {
-		TreeNode node = new TreeNode("Exit Scope");
+		TreeNode node = new TreeNode("Exit Scope", "Exit Scope");
+		node.setName("Exit Scope");
 
 		TreeNode scopeExit = new TreeNode("Exit Scope", "}");
 		scopeExit.setName("Enter Scope");
@@ -798,6 +812,7 @@ public class Parser {
 	// ifEver(if) Statement
 	private TreeNode ifEverStatement() {
 		TreeNode ifevernode = new TreeNode("ifEver Statement","ifEver Statement");
+		ifevernode.setName("ifEver Statement");
 
 		TreeNode typeNode = new TreeNode("Type", "ifever");
 		typeNode.setName("ifever Type");
@@ -839,7 +854,7 @@ public class Parser {
 
 	// ifNot(else) Statement
 	private TreeNode ifNotStatement() {
-		TreeNode ifNotnode = new TreeNode("ifNot Statement");
+		TreeNode ifNotnode = new TreeNode("ifNot Statement", "ifNot Statement");
 
 		TreeNode typeNode = new TreeNode("Type", "ifnot");
 		typeNode.setName("ifnot Type");
@@ -867,7 +882,7 @@ public class Parser {
 
 	// unless(elseIf) Statement
 	private TreeNode UnlessStatement() {
-		TreeNode unlessnode = new TreeNode("unless Statement");
+		TreeNode unlessnode = new TreeNode("unless Statement", "unless Statement");
 
 		TreeNode typeNode = new TreeNode("Type", "unless");
 		typeNode.setName("unless Type");
@@ -909,7 +924,7 @@ public class Parser {
 
 	// habang(while) loop
 	private TreeNode habangStatement() {
-		TreeNode Habangnode = new TreeNode("habang Statement");
+		TreeNode Habangnode = new TreeNode("habang Statement", "habang Statement");
 
 		TreeNode typeNode = new TreeNode("Type", "habang");
 		typeNode.setName("habangnode Type");
@@ -950,7 +965,7 @@ public class Parser {
 
 	// makeGawa(do-while) loop
 	private TreeNode makeGawaStatement() {
-		TreeNode makeGawanode = new TreeNode("makegawa Statement");
+		TreeNode makeGawanode = new TreeNode("makegawa Statement", "makegawa Statement");
 
 		TreeNode typeNode = new TreeNode("Type", "makegawa");
 		typeNode.setName("makegawa Type");
@@ -1080,7 +1095,8 @@ public class Parser {
 
 	// Print/MakeSulat Statement
 	private TreeNode makesulatStatement() {
-		TreeNode node = new TreeNode("makesulat Statement", "makeSulat");
+		TreeNode node = new TreeNode("makeSulat Statement", "makeSulat Statement");
+		node.setName("makeSulat Statement");
 
 		expect("makeSulat");
 

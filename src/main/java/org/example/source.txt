@@ -1,2 +1,1 @@
 cofs x = 4;
-makeSulat(ra);
