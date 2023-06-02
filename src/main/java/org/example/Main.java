@@ -10,18 +10,24 @@ public class Main {
         Lexer lexer = new Lexer();
         List<SimpleEntry<String, String>> tokens = lexer.analyzeTokens();
 
+        // Create an instance of the SemanticAnalyzer
+        SemanticAnalyzer semanticAnalyzer = new SemanticAnalyzer();
+
         Parser parser = new Parser(tokens);
         TreeNode parseTree = parser.parse();
 
+        // Analyze the parse tree with the SemanticAnalyzer
+        semanticAnalyzer.analyze(parseTree);
+
         // Print the token list
-        System.out.println("Token list:");
-        for (SimpleEntry<String, String> token : tokens) {
-            System.out.println(token.getKey() + " : " + token.getValue());
-        }
+//        System.out.println("Token list:");
+//        for (SimpleEntry<String, String> token : tokens) {
+//            System.out.println(token.getKey() + " : " + token.getValue());
+//        }
 
         // Print the parse tree
-        System.out.println("\nParse tree:");
-        printParseTree(parseTree, "   ");
+//        System.out.println("\nParse tree:");
+//        printParseTree(parseTree, "   ");
 
         SwingUtilities.invokeLater(() -> {
             JFrame frame = new JFrame("Parse Tree");
@@ -33,6 +39,7 @@ public class Main {
         });
         System.out.println("Parsing successful!");
     }
+
     private static void printParseTree(TreeNode node, String indent) {
         String label = node.getLabel();
         String name = node.getName();

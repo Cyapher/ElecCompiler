@@ -1,5 +1,7 @@
 package org.example;
 
+import jdk.nashorn.internal.ir.Symbol;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,15 +10,12 @@ public class TreeNode {
     private String value;
     private String name;
     private List<TreeNode> children;
+    private Symbol symbol; // Symbol associated with the node (e.g., variable, function)
 
     public TreeNode(String label) {
         this.label = label;
         this.value = "";
         this.children = new ArrayList<>();
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public TreeNode(String label, String value) {
@@ -48,6 +47,19 @@ public class TreeNode {
     public String getName() {
         return name;
     }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Symbol getSymbol() {
+        return symbol;
+    }
+
+    public void setSymbol(Symbol symbol) {
+        this.symbol = symbol;
+    }
+
     public TreeNode getChildByName(String name) {
         for (TreeNode child : children) {
             if (name.equals(child.getName())) {
@@ -56,13 +68,18 @@ public class TreeNode {
         }
         return null;
     }
-    
+
     public String toString(String prefix, boolean isTail) {
         StringBuilder sb = new StringBuilder();
 
         sb.append(prefix);
         sb.append(isTail ? "└── " : "├── ");
         sb.append(label);
+        if (symbol != null) {
+            sb.append(" [");
+            sb.append(symbol.toString());
+            sb.append("]");
+        }
         sb.append("\n");
 
         for (int i = 0; i < children.size() - 1; i++) {

@@ -158,7 +158,7 @@ public class Parser {
 		node.addChild(identifierNode);
 		expect("IDENTIFIER");
 		
-		System.out.println("PEEK: " + peekNextToken().getValue());
+
 
 		if(currentAndNext()){
 			throw new IllegalStateException("Unexpected Tokens");
@@ -548,8 +548,7 @@ public class Parser {
 			}
 
 		} else if (isType("INTEGER VALUE") || isType("FLOAT VALUE")) {
-			System.out.println("else outside chain");
-			System.out.println(currentToken().getKey());
+
 			TreeNode termNode = term();
 			expressionNode.addChild(termNode);
 
@@ -1119,7 +1118,7 @@ public class Parser {
 				} else if (isType("IDENTIFIER")) {
 					TreeNode idNode = new TreeNode("IDENTIFIER", currentToken().getKey());
 					idNode.setName("IDENTIFIER");
-					idNode.addChild(idNode);
+					node.addChild(idNode);
 					expect("IDENTIFIER");
 				} else if (!accept("DOUBLE_QUOTE") && !accept("INTEGER VALUE")) { // for expressions
 					node.addChild(expression());
