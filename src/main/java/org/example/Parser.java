@@ -62,7 +62,7 @@ public class Parser {
 
 	public TreeNode parse() {
 		System.out.println("============ IN PARSER ============");
-		this.parseTree = new TreeNode("Program");
+		this.parseTree = new TreeNode("Program", "Program");
 
 		while (hasTokens()) {
 			this.parseTree.addChild(statement(parseTree));
@@ -160,8 +160,8 @@ public class Parser {
 		node.addChild(typeNode);
 		expect("cofs");
 
-		TreeNode identifierNode = new TreeNode(currentToken().getKey(), typeNode.getValue());
-		identifierNode.setName(typeNode.getValue());
+		TreeNode identifierNode = new TreeNode("Identifier "+ "{"+typeNode.getValue()+"}", currentToken().getKey());
+		identifierNode.setName(currentToken().getKey());
 		node.addChild(identifierNode);
 		expect("IDENTIFIER");
 
@@ -172,7 +172,7 @@ public class Parser {
 		}
 
 		if (accept("ASSIGNMENT")) {
-			TreeNode assignmentNode = new TreeNode( "=", typeNode.getValue());
+			TreeNode assignmentNode = new TreeNode( "ASSIGNMENT", typeNode.getValue());
 //			assignmentNode.setName(typeNode.getValue());
 			assignmentNode.setName(typeNode.getValue());
 			node.addChild(assignmentNode);
@@ -216,13 +216,13 @@ public class Parser {
 		node.addChild(typeNode);
 		expect("luts");
 
-		TreeNode identifierNode = new TreeNode(typeNode.getValue(), currentToken().getKey());
+		TreeNode identifierNode = new TreeNode("Identifier "+ "{"+typeNode.getValue()+"}", currentToken().getKey());
 		identifierNode.setName(currentToken().getKey());
 		node.addChild(identifierNode);
 		expect("IDENTIFIER");
 
 		if (accept("ASSIGNMENT")) {
-			TreeNode assignmentNode = new TreeNode("Assignment", "=");
+			TreeNode assignmentNode = new TreeNode("ASSIGNMENT", "=");
 			assignmentNode.setName("=");
 			node.addChild(assignmentNode);
 
@@ -273,7 +273,7 @@ public class Parser {
 		expect("IDENTIFIER");
 
 		if (accept("ASSIGNMENT")) {
-			TreeNode assignmentNode = new TreeNode("Assignment", "=");
+			TreeNode assignmentNode = new TreeNode("ASSIGNMENT", "=");
 			assignmentNode.setName("=");
 			node.addChild(assignmentNode);
 
