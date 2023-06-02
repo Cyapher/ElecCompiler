@@ -9,7 +9,9 @@ public class TreeNode {
     private String value;
     private String name;
 
+    private TreeNode node;
     private int index;
+    private int left;
     private List<TreeNode> children;
 
 //    private int index;
@@ -25,6 +27,7 @@ public class TreeNode {
     }
 
     public TreeNode(String label, String value) {
+
         this.index = counter++;
         this.label = label;
         this.value = value;
@@ -45,6 +48,7 @@ public class TreeNode {
     public int getIndex() {
         return index;
     }
+
     public String getLabel() {
         return label;
     }
@@ -64,6 +68,28 @@ public class TreeNode {
         }
         return null;
     }
+
+    public  TreeNode getNode(int index) {
+       return this.node;
+    }
+
+    public boolean isLeaf(){
+        if(children.size() == 0){
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+//    public TreeNode getChildByIndex(int index) {
+//        for (int x = 0; x < children.size() - 1; x++) {
+//           TreeNode child = children.get(x);
+//
+//            return child;
+//        }
+//        return null;
+//    }
     
     public String toString(String prefix, boolean isTail) {
         StringBuilder sb = new StringBuilder();

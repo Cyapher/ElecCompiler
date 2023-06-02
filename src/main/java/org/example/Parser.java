@@ -160,7 +160,7 @@ public class Parser {
 		node.addChild(typeNode);
 		expect("cofs");
 
-		TreeNode identifierNode = new TreeNode("Identifier "+ "{"+typeNode.getValue()+"}", currentToken().getKey());
+		TreeNode identifierNode = new TreeNode("IDENTIFIER", currentToken().getKey());
 		identifierNode.setName(currentToken().getKey());
 		node.addChild(identifierNode);
 		expect("IDENTIFIER");
@@ -613,14 +613,14 @@ public class Parser {
 	}
 
 	private TreeNode term() {
-		TreeNode termNode = new TreeNode("Term", "Term");
-		termNode.setName("Term");
+		TreeNode termNode = new TreeNode("Term", currentToken().getKey());
+		termNode.setName(currentToken().getKey());
 
 		TreeNode factorNode = factor();
 		termNode.addChild(factorNode);
 
 		while (isType("MULTIPLICATION") || isType("DIVISION") ) {
-			TreeNode operatorNode = new TreeNode("Operator", currentToken().getKey());
+			TreeNode operatorNode = new TreeNode(currentToken().getValue(), currentToken().getKey());
 			termNode.addChild(operatorNode);
 			nextToken();
 
@@ -1102,8 +1102,8 @@ public class Parser {
 
 	// Print/MakeSulat Statement
 	private TreeNode makesulatStatement() {
-		TreeNode node = new TreeNode("makeSulat Statement", "makeSulat Statement");
-		node.setName("makeSulat Statement");
+		TreeNode node = new TreeNode("makeSulat", "makeSulat");
+		node.setName("makeSulat");
 
 		expect("makeSulat");
 
