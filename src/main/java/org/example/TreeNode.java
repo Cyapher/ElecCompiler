@@ -4,15 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TreeNode {
+    private static int counter = 0;
     private String label;
     private String value;
     private String name;
+
+    private int index;
     private List<TreeNode> children;
 
+//    private int index;
     public TreeNode(String label) {
-        this.label = label;
-        this.value = "";
-        this.children = new ArrayList<>();
+        this(label, "");
+//        this.label = label;
+//        this.value = "";
+//        this.children = new ArrayList<>();
     }
 
     public void setName(String name) {
@@ -20,6 +25,7 @@ public class TreeNode {
     }
 
     public TreeNode(String label, String value) {
+        this.index = counter++;
         this.label = label;
         this.value = value;
         this.children = new ArrayList<>();
@@ -36,7 +42,9 @@ public class TreeNode {
     public String getValue() {
         return value;
     }
-
+    public int getIndex() {
+        return index;
+    }
     public String getLabel() {
         return label;
     }
@@ -79,4 +87,8 @@ public class TreeNode {
     public String toString() {
         return toString("", true);
     }
+
+//    public void setIndex(int index) {
+//        this.index =
+//    }
 }

@@ -11,12 +11,14 @@ public class Parser {
 	private int currentIndex;
 	private int scope = 1;
 	private HashMap<Integer, List<String>> identifiersList = new HashMap<Integer, List<String>>();
-	private TreeNode parseTree; 
+	private TreeNode parseTree;
 
 	public Parser(List<SimpleEntry<String, String>> tokens) {
 		this.tokens = tokens;
 		this.currentIndex = 0;
 		this.identifiersList.put(scope, Arrays.asList());
+
+
 	}
 
 	private SimpleEntry<String, String> currentToken() {
@@ -60,7 +62,7 @@ public class Parser {
 
 	public TreeNode parse() {
 		System.out.println("============ IN PARSER ============");
-		this.parseTree = new TreeNode("Program", "Program");
+		this.parseTree = new TreeNode("Program");
 
 		while (hasTokens()) {
 			this.parseTree.addChild(statement(parseTree));
@@ -79,6 +81,8 @@ public class Parser {
 	//Statement
 	private TreeNode statement(TreeNode parseTree) {
 		TreeNode statementNode = null;
+
+
 
 		if (isType("cofs")) {
 			if (peekNextToken().getValue().equals("OPEN SQUARE")) {
@@ -149,28 +153,28 @@ public class Parser {
 
 	// cofs(int) initialization
 	private TreeNode cofsInitialization() {
-		TreeNode node = new TreeNode("Cofs Initialization", "Cofs Initialization");
-		node.setName("Cofs Initialization");
+		TreeNode node = new TreeNode("Cofs Initialization", "cofs");
 
 		TreeNode typeNode = new TreeNode("Type", "cofs");
 		typeNode.setName("Cofs Type");
 		node.addChild(typeNode);
 		expect("cofs");
 
-		TreeNode identifierNode = new TreeNode("Identifier", currentToken().getKey());
-		identifierNode.setName("Variable Name");
+		TreeNode identifierNode = new TreeNode(currentToken().getKey(), typeNode.getValue());
+		identifierNode.setName(typeNode.getValue());
 		node.addChild(identifierNode);
 		expect("IDENTIFIER");
-		
+
 		//System.out.println("PEEK: " + peekNextToken().getValue());
 
-		if(currentAndNext()){
+		if (currentAndNext()) {
 			throw new IllegalStateException("Unexpected Tokens");
 		}
 
 		if (accept("ASSIGNMENT")) {
-			TreeNode assignmentNode = new TreeNode("Assignment", "=");
-			assignmentNode.setName("Assignment Operator");
+			TreeNode assignmentNode = new TreeNode( "=", typeNode.getValue());
+//			assignmentNode.setName(typeNode.getValue());
+			assignmentNode.setName(typeNode.getValue());
 			node.addChild(assignmentNode);
 
 			// expression / operator / operand
@@ -180,11 +184,12 @@ public class Parser {
 				// recognizing between parenthesis/non-parenthesis expressions and operands will
 				// be done in expression()
 				TreeNode expressionNode = expression();
-				expressionNode.setName("Assigned Value");
+//				expressionNode.setName("Assigned Value");
+//				expressionNode.setName(currentToken().getKey());
 				node.addChild(expressionNode);
+//				currentToken().setValue(typeNode.getValue());
 
 
-				// i-angat ito??
 				if (accept("CLOSE PARENTHESIS")) {
 					throw new IllegalStateException("Unexpected token of type: CLOSE PARENTHESIS");
 				}
@@ -211,14 +216,14 @@ public class Parser {
 		node.addChild(typeNode);
 		expect("luts");
 
-		TreeNode identifierNode = new TreeNode("Identifier", currentToken().getKey());
-		identifierNode.setName("Variable Name");
+		TreeNode identifierNode = new TreeNode(typeNode.getValue(), currentToken().getKey());
+		identifierNode.setName(currentToken().getKey());
 		node.addChild(identifierNode);
 		expect("IDENTIFIER");
 
 		if (accept("ASSIGNMENT")) {
 			TreeNode assignmentNode = new TreeNode("Assignment", "=");
-			assignmentNode.setName("Assignment Operator");
+			assignmentNode.setName("=");
 			node.addChild(assignmentNode);
 
 			if (accept("OPEN PARENTHESIS")) {
@@ -234,10 +239,15 @@ public class Parser {
 					node.addChild(expressionNode);
 				}
 			} else {
-				TreeNode valueNode = new TreeNode("Value", currentToken().getKey());
-				valueNode.setName("Assigned Value");
+//				TreeNode valueNode = new TreeNode("Value", currentToken().getKey());
+//				valueNode.setName("Assigned Value");
+//				node.addChild(valueNode);
+//
+				TreeNode valueNode = expression();
+////				expressionNode.setName("Assigned Value");
+//				valueNode.setName(currentToken().getKey());
 				node.addChild(valueNode);
-				expect("FLOAT VALUE");
+//				expect("FLOAT VALUE");
 			}
 		}
 
@@ -257,14 +267,14 @@ public class Parser {
 
 		checkScope();
 
-		TreeNode identifierNode = new TreeNode("Identifier", currentToken().getKey());
-		identifierNode.setName("Variable Name");
+		TreeNode identifierNode = new TreeNode("Identifier "+ "{"+typeNode.getValue()+"}", currentToken().getKey());
+		identifierNode.setName(currentToken().getKey());
 		node.addChild(identifierNode);
 		expect("IDENTIFIER");
 
 		if (accept("ASSIGNMENT")) {
 			TreeNode assignmentNode = new TreeNode("Assignment", "=");
-			assignmentNode.setName("Assignment Operator");
+			assignmentNode.setName("=");
 			node.addChild(assignmentNode);
 
 			TreeNode openingQuoteNode = new TreeNode("DOUBLE_QUOTE", "\"");
@@ -272,8 +282,8 @@ public class Parser {
 			node.addChild(openingQuoteNode);
 			expect("DOUBLE_QUOTE"); // Expect opening double quote
 
-			TreeNode valueNode = new TreeNode("Value", currentToken().getKey());
-			valueNode.setName("Assigned Value");
+			TreeNode valueNode = new TreeNode(" String Value", currentToken().getKey());
+			valueNode.setName(currentToken().getKey());
 			node.addChild(valueNode);
 			expect("STRING_VALUE");
 
@@ -419,9 +429,7 @@ public class Parser {
 						nextToken(); // Consume the STRING VALUE token
 					}
 					expect("DOUBLE_QUOTE");
-				}
-
-				else {
+				} else {
 					throw new IllegalStateException(
 							"Expected token of type: INTEGER VALUE, FLOAT VALUE, or STRING VALUE but got: "
 									+ currentToken().getKey().toString());
@@ -573,14 +581,12 @@ public class Parser {
 				termNode = term();
 				expressionNode.addChild(termNode);
 			}
-		}
-
-		else if (!currentAndNext()) {
+		} else if (!currentAndNext()) {
 			TreeNode operatorNode = new TreeNode(currentToken().getValue(), currentToken().getKey());
 			operatorNode.setName("Operator");
 			expressionNode.addChild(operatorNode);
 			nextToken();
-		}	
+		}
 
 		return expressionNode;
 	}
@@ -591,11 +597,11 @@ public class Parser {
 		if (isType("ADDITION") || isType("SUBTRACTION") || isType("MODULO") || isType("LESS THAN") || isType("GREATER THAN") || isType("ASSIGNMENT")) {
 			curr = true;
 		}
-		if ((peekNextToken().getValue() == "ADDITION")  
-		|| (peekNextToken().getValue() == "SUBTRACTION") 
-		|| (peekNextToken().getValue() == "MODULO")
-		|| (peekNextToken().getValue() == "LESS THAN")
-		|| (peekNextToken().getValue() == "GREATER THAN")) {
+		if ((peekNextToken().getValue() == "ADDITION")
+				|| (peekNextToken().getValue() == "SUBTRACTION")
+				|| (peekNextToken().getValue() == "MODULO")
+				|| (peekNextToken().getValue() == "LESS THAN")
+				|| (peekNextToken().getValue() == "GREATER THAN")) {
 			next = true;
 		}
 
@@ -613,7 +619,7 @@ public class Parser {
 		TreeNode factorNode = factor();
 		termNode.addChild(factorNode);
 
-		while (isType("MULTIPLICATION") || isType("DIVISION")) {
+		while (isType("MULTIPLICATION") || isType("DIVISION") ) {
 			TreeNode operatorNode = new TreeNode("Operator", currentToken().getKey());
 			termNode.addChild(operatorNode);
 			nextToken();
@@ -636,33 +642,34 @@ public class Parser {
 		TreeNode node;
 
 		if (isType("INTEGER VALUE")) {
-			node = new TreeNode("Value", currentToken().getKey());
-			node.setName("Integer Value");
+			node = new TreeNode("Cofs Value", currentToken().getKey());
+			node.setName(currentToken().getKey());
+
 			nextToken();
 		} else if (isType("FLOAT VALUE")) {
-			node = new TreeNode("Value", currentToken().getKey());
-			node.setName("Float Value");
+			node = new TreeNode("Luts Value", currentToken().getKey());
+			node.setName(currentToken().getKey());
 			nextToken();
 		} else if (isType("IDENTIFIER")) {
 			node = new TreeNode("Identifier", currentToken().getKey());
-			node.setName("Variable Name");
+			node.setName(currentToken().getKey());
 			nextToken();
 		} else if (isType("EQUALITY")) {
 			node = new TreeNode("Equality Operator", currentToken().getValue());
 			nextToken();
 			if (isType("INTEGER VALUE")) {
 				TreeNode valueNode = new TreeNode("Value", currentToken().getKey());
-				valueNode.setName("Integer Value");
+				valueNode.setName(currentToken().getKey());
 				node.addChild(valueNode);
 				nextToken();
 			} else if (isType("FLOAT VALUE")) {
 				TreeNode valueNode = new TreeNode("Value", currentToken().getKey());
-				valueNode.setName("Float Value");
+				valueNode.setName(currentToken().getKey());
 				node.addChild(valueNode);
 				nextToken();
 			} else if (isType("IDENTIFIER")) {
 				TreeNode idNode = new TreeNode("Identifier", currentToken().getKey());
-				idNode.setName("Variable Name");
+				idNode.setName(currentToken().getKey());
 				node.addChild(idNode);
 				nextToken();
 			} else {
