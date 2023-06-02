@@ -13,7 +13,11 @@ public class Main {
         Parser parser = new Parser(tokens);
         TreeNode parseTree = parser.parse();
 
+        Semantic sem = new Semantic(tokens, parseTree);
+        sem.traverse();
+
         // Print the token list
+        System.out.println("============ IN MAIN ============");
         System.out.println("Token list:");
         for (SimpleEntry<String, String> token : tokens) {
             System.out.println(token.getKey() + " : " + token.getValue());
@@ -44,5 +48,8 @@ public class Main {
         for (TreeNode child : node.getChildren()) {
             printParseTree(child, indent + "   |");
         }
+
     }
+
+
 }
