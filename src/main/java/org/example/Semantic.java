@@ -31,12 +31,6 @@ public class Semantic {
         return tokens.get(currentIndex);
     }
 
-    //    private AbstractMap.SimpleEntry<String, String> currentNode() {
-//        if (currentIndex >= parseTree.size()) {
-//            return null;
-//        }
-//        return tokens.get(currentIndex);
-//    }
     private boolean hasTokens() {
         return currentIndex < tokens.size();
     }
@@ -46,10 +40,8 @@ public class Semantic {
         return currentToken();
     }
 
-    //    private AbstractMap.SimpleEntry<String, String> nextNode() {
-//        currentIndex++;
-//        return currentNode();
-//    }
+
+
     private boolean isType(String type) {
         return currentToken() != null && currentToken().getValue().equals(type);
     }
@@ -102,21 +94,29 @@ public class Semantic {
 //    for (TreeNode child : node.getChildren()) {
 //        traverse(child);
 //    }
-        System.out.println("label: " + node.getLabel() + " || name: " + node.getName() );
-        if (node.getLabel().equals("cofs")) {
-            String varName = node.getValue();
-            if (initializedVars.containsKey(varName)) {
-                System.err.println("Error: variable '" + varName + "' has already been initialized.");
-                System.exit(1);
-            }
-            initializedVars.put(varName, "cofs");
-            System.out.println("Added variable " + varName + " of type 'cofs' to symbol table.");
-        }
+        System.out.println("index: " + node.getIndex() +"|| label: " + node.getLabel() + " || name: " + node.getName() );
+//        if (node.getLabel().equals("cofs")) {
+//            String varName = node.getValue();
+//            if (initializedVars.containsKey(varName)) {
+//                System.err.println("Error: variable '" + varName + "' has already been initialized.");
+//                System.exit(1);
+//            }
+//            initializedVars.put(varName, "cofs");
+//            System.out.println("Added variable " + varName + " of type 'cofs' to symbol table.");
+//        }
+
+        //operations
+//        if (node.getName() == "ADDITION" ){
+//                if(){}
+//        }
+
+
 
         // Continue traversal
         for (TreeNode child : node.getChildren()) {
             traverse(child);
         }
+
     }
 
 

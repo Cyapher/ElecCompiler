@@ -160,7 +160,7 @@ public class Parser {
 		node.addChild(typeNode);
 		expect("cofs");
 
-		TreeNode identifierNode = new TreeNode("Identifier "+ "{"+currentToken().getKey()+"}", typeNode.getValue());
+		TreeNode identifierNode = new TreeNode(currentToken().getKey(), typeNode.getValue());
 		identifierNode.setName(typeNode.getValue());
 		node.addChild(identifierNode);
 		expect("IDENTIFIER");
@@ -216,7 +216,7 @@ public class Parser {
 		node.addChild(typeNode);
 		expect("luts");
 
-		TreeNode identifierNode = new TreeNode("Identifier "+ "{"+typeNode.getValue()+"}", currentToken().getKey());
+		TreeNode identifierNode = new TreeNode(typeNode.getValue(), currentToken().getKey());
 		identifierNode.setName(currentToken().getKey());
 		node.addChild(identifierNode);
 		expect("IDENTIFIER");
