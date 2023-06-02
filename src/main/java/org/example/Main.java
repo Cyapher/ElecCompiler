@@ -15,6 +15,7 @@ public class Main {
 
         Semantic sem = new Semantic(tokens, parseTree);
         sem.traverse();
+        sem.interpret();
 
         // Print the token list
         System.out.println("============ IN MAIN ============");

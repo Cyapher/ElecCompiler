@@ -613,8 +613,8 @@ public class Parser {
 	}
 
 	private TreeNode term() {
-		TreeNode termNode = new TreeNode("Term", "Term");
-		termNode.setName("Term");
+		TreeNode termNode = new TreeNode("Term", currentToken().getKey());
+		termNode.setName(currentToken().getKey());
 
 		TreeNode factorNode = factor();
 		termNode.addChild(factorNode);
