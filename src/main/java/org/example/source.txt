@@ -1,2 +1,4 @@
 cofs x = 4;
-makeSulat(ra);
+cofs y = 84;
+x = 2333;
+Sinds z = "yeet";
