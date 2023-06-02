@@ -620,7 +620,7 @@ public class Parser {
 		termNode.addChild(factorNode);
 
 		while (isType("MULTIPLICATION") || isType("DIVISION") ) {
-			TreeNode operatorNode = new TreeNode("Operator", currentToken().getKey());
+			TreeNode operatorNode = new TreeNode(currentToken().getValue(), currentToken().getKey());
 			termNode.addChild(operatorNode);
 			nextToken();
 

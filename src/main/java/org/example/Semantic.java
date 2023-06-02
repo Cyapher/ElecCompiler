@@ -158,9 +158,14 @@ public class Semantic {
 
         }
 
+        if (node.getLabel() == "cofs" && node.getValue() == "cofs"){
+
+        }
 
 
-        // Continue traversal
+
+
+            // Continue traversal
         for (TreeNode child : node.getChildren()) {
             traverse(child);
         }
@@ -213,7 +218,7 @@ public class Semantic {
         if (node.getLabel() == "DIVISION" ) {
 
             int left = node.getIndex() - 1;
-            int right = node.getIndex() + 2;
+            int right = node.getIndex() + 1;
 
             if(leafNodes.containsKey(left) && leafNodes.containsKey(right)){
 
@@ -229,7 +234,7 @@ public class Semantic {
         if (node.getLabel() == "MULTIPLICATION" ) {
 
             int left = node.getIndex() - 1;
-            int right = node.getIndex() + 2;
+            int right = node.getIndex() + 1;
 
             if(leafNodes.containsKey(left) && leafNodes.containsKey(right)){
 
@@ -258,6 +263,10 @@ public class Semantic {
             }
 
         }
+
+
+
+
 
         for (TreeNode child : node.getChildren()) {
             interpret(child);
