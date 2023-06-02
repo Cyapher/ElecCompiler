@@ -11,6 +11,8 @@ public class Semantic {
     private HashMap<String, String> initializedVars = new HashMap<>();
     private HashMap<Integer, String> leafNodes = new HashMap<>();
 
+    private HashMap<String, String> ARresults = new HashMap<>();
+    private HashMap<String, String> identval = new HashMap<>();
     private List<AbstractMap.SimpleEntry<String, String>> tokens; //value = type
     private int currentIndex;
     private int scope = 1;
@@ -41,7 +43,6 @@ public class Semantic {
         currentIndex++;
         return currentToken();
     }
-
 
 
     private boolean isType(String type) {
@@ -98,7 +99,7 @@ public class Semantic {
 //    for (TreeNode child : node.getChildren()) {
 //        traverse(child);
 //    }
-        System.out.println("index: " + node.getIndex() +"|| label: " + node.getLabel() + " || name: " + node.getName() );
+        System.out.println("index: " + node.getIndex() + "|| label: " + node.getLabel() + " || name: " + node.getName());
 //        if (node.getValue().equals("cofs")){
 //            System.out.println(node.getIndex());
 //        }
@@ -137,7 +138,14 @@ public class Semantic {
 //
 //        }
 
-            if (node.getLabel().equals("Cofs Value")) {
+
+//        if (node.getLabel().equals("IDENTIFIER")){
+//
+//
+//            System.out.println(ARresults);
+//        }
+
+        if (node.getLabel().equals("Cofs Value")) {
 //            System.out.println(node.getIndex());
 //                System.out.println("hatdkas");
 //                if (node.isLeaf()) {
@@ -149,7 +157,6 @@ public class Semantic {
 //                System.out.println(leafNodes);
 
 
-
 //            System.out.println(left);
 //            System.out.println(node.getChildByIndex(node.getIndex()));
 //                if(node.getLeft() == ){
@@ -158,14 +165,8 @@ public class Semantic {
 
         }
 
-        if (node.getLabel() == "cofs" && node.getValue() == "cofs"){
 
-        }
-
-
-
-
-            // Continue traversal
+        // Continue traversal
         for (TreeNode child : node.getChildren()) {
             traverse(child);
         }
@@ -177,102 +178,133 @@ public class Semantic {
         traverse(parseTree);
     }
 
-    public void interpret(TreeNode node){
+    public void interpret(TreeNode node) {
         if (node == null) return;
-            int var1;
-            int var2;
-        if (node.getLabel() == "ADDITION" ) {
+
+        int var1;
+        int var2;
+        String valId;
+
+
+
+        if (node.getLabel() == "ADDITION") {
 
             int left = node.getIndex() - 1;
             int right = node.getIndex() + 2;
-
-            if(leafNodes.containsKey(left) && leafNodes.containsKey(right)){
+            int varindex = node.getIndex() - 5;
+            if (leafNodes.containsKey(left) && leafNodes.containsKey(right)) {
 //                System.out.println("value is: " + leafNodes.get(left));
 //                System.out.println("value is: " + leafNodes.get(right));
                 var1 = Integer.parseInt(leafNodes.get(left));
                 var2 = Integer.parseInt(leafNodes.get(right));
 
+                valId = leafNodes.get(varindex);
+
                 int sum = var1 + var2;
 
-                System.out.println(sum);
+                ARresults.put(valId, String.valueOf(sum));
+//                ARresults.values();
+//                System.out.println(ARresults);
             }
 
         }
 
-        if (node.getLabel() == "SUBTRACTION" ) {
+        if (node.getLabel() == "SUBTRACTION") {
 
             int left = node.getIndex() - 1;
             int right = node.getIndex() + 2;
-
-            if(leafNodes.containsKey(left) && leafNodes.containsKey(right)){
+            int varindex = node.getIndex() - 5;
+            if (leafNodes.containsKey(left) && leafNodes.containsKey(right)) {
 
                 var1 = Integer.parseInt(leafNodes.get(left));
                 var2 = Integer.parseInt(leafNodes.get(right));
+
+                valId = leafNodes.get(varindex);
 
                 int difference = var1 - var2;
 
-                System.out.println(difference);
+                ARresults.put(valId, String.valueOf(difference));
+
+                System.out.println(ARresults);
             }
 
         }
-        if (node.getLabel() == "DIVISION" ) {
+        if (node.getLabel() == "DIVISION") {
 
             int left = node.getIndex() - 1;
             int right = node.getIndex() + 1;
+            int varindex = node.getIndex() - 5;
 
-            if(leafNodes.containsKey(left) && leafNodes.containsKey(right)){
+            if (leafNodes.containsKey(left) && leafNodes.containsKey(right)) {
 
                 var1 = Integer.parseInt(leafNodes.get(left));
                 var2 = Integer.parseInt(leafNodes.get(right));
+
+                valId = leafNodes.get(varindex);
 
                 int quotient = var1 / var2;
 
-                System.out.println(quotient);
+                ARresults.put(valId, String.valueOf(quotient));
+
+                System.out.println(ARresults);
             }
 
         }
-        if (node.getLabel() == "MULTIPLICATION" ) {
+        if (node.getLabel() == "MULTIPLICATION") {
 
             int left = node.getIndex() - 1;
             int right = node.getIndex() + 1;
-
-            if(leafNodes.containsKey(left) && leafNodes.containsKey(right)){
+            int varindex = node.getIndex() - 5;
+            if (leafNodes.containsKey(left) && leafNodes.containsKey(right)) {
 
                 var1 = Integer.parseInt(leafNodes.get(left));
                 var2 = Integer.parseInt(leafNodes.get(right));
 
+                valId = leafNodes.get(varindex);
                 int product = var1 * var2;
 
-                System.out.println(product);
+                ARresults.put(valId, String.valueOf(product));
+
+                System.out.println(ARresults);
             }
 
         }
-        if (node.getLabel() == "MODULO" ) {
+        if (node.getLabel() == "MODULO") {
 
             int left = node.getIndex() - 1;
             int right = node.getIndex() + 2;
-
-            if(leafNodes.containsKey(left) && leafNodes.containsKey(right)){
+            int varindex = node.getIndex() - 5;
+            if (leafNodes.containsKey(left) && leafNodes.containsKey(right)) {
 
                 var1 = Integer.parseInt(leafNodes.get(left));
                 var2 = Integer.parseInt(leafNodes.get(right));
-
+                valId = leafNodes.get(varindex);
                 int remainder = var1 % var2;
 
-                System.out.println(remainder);
+                ARresults.put(valId, String.valueOf(remainder));
+//                ARresults.values();
+                System.out.println(ARresults);
             }
 
         }
 
 
+            if (node.getLabel() == "IDENTIFIER") {
 
 
+                String varindex = node.getValue();
+
+//            valId = leafNodes.get(varindex);
+                identval.put(varindex, String.valueOf(ARresults.values()));
+                System.out.println(identval);
+        }
 
         for (TreeNode child : node.getChildren()) {
             interpret(child);
         }
 
     }
+
     public void interpret() {
         interpret(parseTree);
     }

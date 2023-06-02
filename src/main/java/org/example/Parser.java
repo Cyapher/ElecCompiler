@@ -160,8 +160,8 @@ public class Parser {
 		node.addChild(typeNode);
 		expect("cofs");
 
-		TreeNode identifierNode = new TreeNode(currentToken().getKey(), typeNode.getValue());
-		identifierNode.setName(typeNode.getValue());
+		TreeNode identifierNode = new TreeNode("IDENTIFIER", currentToken().getKey());
+		identifierNode.setName(currentToken().getKey());
 		node.addChild(identifierNode);
 		expect("IDENTIFIER");
 
@@ -1102,8 +1102,8 @@ public class Parser {
 
 	// Print/MakeSulat Statement
 	private TreeNode makesulatStatement() {
-		TreeNode node = new TreeNode("makeSulat Statement", "makeSulat Statement");
-		node.setName("makeSulat Statement");
+		TreeNode node = new TreeNode("makeSulat", "makeSulat");
+		node.setName("makeSulat");
 
 		expect("makeSulat");
 
