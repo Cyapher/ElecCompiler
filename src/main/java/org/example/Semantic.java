@@ -22,8 +22,8 @@ public class Semantic {
 
     public void TraverseParseTree(TreeNode parsetree){
         System.out.println("Parse Tree: \n" + parsetree.getChildren().get(0));
-        TreeNode endOfLineNode = findNodeByName(parsetree, "END OF LINE");
-        System.out.println("Child: \n" + endOfLineNode);
+//        TreeNode endOfLineNode = findNodeByName(parsetree, "END OF LINE");
+//        System.out.println("Child: \n" + endOfLineNode);
     }
 
     public void Semantic() {
@@ -85,8 +85,10 @@ public class Semantic {
             System.out.println();
         }
 
-        System.out.println("\nToken List as Table: \n");
+        System.out.println("\nToken List as Table:");
         printTable(array, columnNames);
+        SampleTable st = new SampleTable(array, columnNames);
+        st.createAndShowGUI();
     }
 
     private void printTable(String[][] data, String[] columnNames) {
